@@ -24,6 +24,32 @@ test.describe('Game Listing and Navigation', () => {
     });
   });
 
+  test('should filter games by category and publisher on the index page', async ({ page }) => {
+    await page.goto('/');
+
+    await test.step('Combine a category and publisher filter', async () => {
+      await page.getByRole('checkbox', { name: 'Action' }).check();
+      await page.getByRole('checkbox', { name: 'Strategy' }).check();
+      await page.getByLabel('Publisher').selectOption({ label: 'CodeForge Studios' });
+
+      await expect(page).toHaveURL(/category=Action.*category=Strategy/);
+      await expect(page).toHaveURL(/publisher=CodeForge/);
+      await expect(page.getByTestId('active-filter-summary')).toHaveText('Showing 3 matching games');
+      await expect(page.getByRole('link', { name: /Cloud Conqueror/ })).toBeVisible();
+      await expect(page.getByRole('link', { name: /Script Strike/ })).toBeVisible();
+      await expect(page.getByRole('link', { name: /DevOps Dominion/ })).toBeVisible();
+      await expect(page.getByRole('link', { name: /Terminal Turbulence/ })).toBeHidden();
+    });
+
+    await test.step('Clear all filters', async () => {
+      await page.getByRole('button', { name: 'Clear filters' }).click();
+
+      await expect(page).not.toHaveURL(/category=|publisher=/);
+      await expect(page.getByTestId('active-filter-summary')).toHaveText('Showing all games');
+      await expect(page.getByTestId('game-card')).toHaveCount(21);
+    });
+  });
+
   test('should display each game rating out of five on the index page', async ({ page }) => {
     await page.goto('/');
 
