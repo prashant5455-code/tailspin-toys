@@ -35,6 +35,8 @@ npm run dev
 
 `predev` migrates and seeds the local database first. Then navigate to the [website](http://localhost:4321) to see the site!
 
+The home page includes category checkboxes and a publisher selector. Multiple categories can be selected, and category and publisher selections can be combined. The current filters are reflected in the URL so filtered catalog views can be shared.
+
 To preview a production build instead:
 
 ```bash
